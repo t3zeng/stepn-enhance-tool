@@ -1,3 +1,5 @@
+import re
+
 def calculate_slot_probabilities(items, top_n=10):
     if len(items) != 5:
         print("Must use 5 items for enhancement!")
@@ -36,7 +38,8 @@ def calculate_slot_probabilities(items, top_n=10):
     sorted_results = sorted(results.items(), key=lambda x: x[1], reverse=True)
     for i in range(min(top_n, len(sorted_results))):
         result, probability = sorted_results[i]
-        print(result + ":", probability)
+        stripped_result = re.sub(r"slot(\d)", "", result)
+        print(stripped_result + ":", probability)
 
 # Example usage:
 items = [
