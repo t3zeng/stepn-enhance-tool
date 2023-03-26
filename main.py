@@ -1,5 +1,12 @@
 import itertools
 from collections import defaultdict
+from enum import Enum
+import random
+
+class Rarity(Enum):
+    UNCOMMON = "uncommon"
+    RARE = "rare"
+    EPIC = "epic"
 
 def calculate_slot_probabilities(items, top_n=10):
     if len(items) != 5:
@@ -39,13 +46,34 @@ def calculate_slot_probabilities(items, top_n=10):
     for result, probability in top_results:
         print(f"{result}: {probability/total_probability:.2%}")
 
+def calculate_item_stats(rarity):
+    efficiency, luck, comfort, resilience = 0.0, 0.0, 0.0, 0.0
+    if rarity == Rarity.UNCOMMON:
+        efficiency = random.uniform(9.6, 21.6)
+        luck = random.uniform(9.6, 21.6)
+        comfort = random.uniform(9.6, 21.6)
+        resilience = random.uniform(9.6, 21.6)
+    elif rarity == Rarity.RARE:
+        efficiency = random.uniform(18.0, 42.0)
+        luck = random.uniform(18.0, 42.0)
+        comfort = random.uniform(18.0, 42.0)
+        resilience = random.uniform(18.0, 42.0)
+    elif rarity == Rarity.EPIC:
+        efficiency = random.uniform(33.6, 75.6)
+        luck = random.uniform(33.6, 75.6)
+        comfort = random.uniform(33.6, 75.6)
+        resilience = random.uniform(33.6, 75.6)
+
+    print(f"efficiency: {efficiency:.1f}, luck: {luck:.1f}, comfort: {comfort:.1f}, resilience: {resilience:.1f}")
+
 
 # Example usage:
 items = [
-    {"slot1": "E", "slot2": "L", "slot3": "E", "slot4": "C"},
-    {"slot1": "E", "slot2": "L", "slot3": "C", "slot4": "C"},
-    {"slot1": "C", "slot2": "L", "slot3": "L", "slot4": "E"},
-    {"slot1": "E", "slot2": "E", "slot3": "C", "slot4": "C"},
-    {"slot1": "L", "slot2": "C", "slot3": "L", "slot4": "L"}
+    {"slot1": "R", "slot2": "L", "slot3": "E", "slot4": "L"},
+    {"slot1": "R", "slot2": "L", "slot3": "L", "slot4": "L"},
+    {"slot1": "R", "slot2": "L", "slot3": "C", "slot4": "L"},
+    {"slot1": "R", "slot2": "R", "slot3": "C", "slot4": "C"},
+    {"slot1": "E", "slot2": "L", "slot3": "C", "slot4": "C"}
 ]
-calculate_slot_probabilities(items, top_n=20)
+calculate_slot_probabilities(items, top_n=15)
+calculate_item_stats(Rarity.EPIC)
