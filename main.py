@@ -1,4 +1,5 @@
-import re
+import itertools
+from collections import defaultdict
 
 def calculate_slot_probabilities(items, top_n=10):
     if len(items) != 5:
@@ -16,30 +17,28 @@ def calculate_slot_probabilities(items, top_n=10):
         for slot_type, count in slot_types.items():
             probability = count / len(items)
             slot_probability[slot_type] = probability
+        print(f"Slot {i + 1}: {slot_probability}")
         slot_probabilities.append(slot_probability)
 
     results = {}
-    for i in range(len(slot_probabilities[0])):
-        for j in range(len(slot_probabilities[1])):
-            for k in range(len(slot_probabilities[2])):
-                for l in range(len(slot_probabilities[3])):
-                    result = ""
-                    total_probability = 1
-                    for m, slot in enumerate([i, j, k, l]):
-                        slot_key = "slot" + str(m+1)
-                        slot_type = list(slot_probabilities[m].keys())[slot]
-                        result += slot_key + slot_type
-                        total_probability *= slot_probabilities[m][slot_type]
-                    if result in results:
-                        results[result] += total_probability
-                    else:
-                        results[result] = total_probability
+    for combination in itertools.product(*[list(slot.keys()) for slot in slot_probabilities]):
+        probability = 1
+        for i, slot_type in enumerate(combination):
+            probability *= slot_probabilities[i][slot_type]
+        results["".join(combination)] = probability
 
     sorted_results = sorted(results.items(), key=lambda x: x[1], reverse=True)
-    for i in range(min(top_n, len(sorted_results))):
-        result, probability = sorted_results[i]
-        stripped_result = re.sub(r"slot(\d)", "", result)
-        print(stripped_result + ":", probability)
+
+    combined_results = defaultdict(float)
+    for result, probability in sorted_results:
+        sorted_letters = "".join(sorted([letter for letter in result]))
+        combined_results[sorted_letters] += probability
+
+    total_probability = sum(combined_results.values())
+    top_results = sorted(combined_results.items(), key=lambda x: x[1], reverse=True)[:top_n]
+    for result, probability in top_results:
+        print(f"{result}: {probability/total_probability:.2%}")
+
 
 # Example usage:
 items = [
