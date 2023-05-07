@@ -14,6 +14,7 @@ def calculate_slot_probabilities(items, top_n=10):
         return -1
 
     slot_probabilities = []
+    total_price = 0
     for i in range(4):
         slot_types = {"E": 0, "C": 0, "L": 0, "R": 0}
         for item in items:
@@ -26,6 +27,8 @@ def calculate_slot_probabilities(items, top_n=10):
             slot_probability[slot_type] = probability
         print(f"Slot {i + 1}: {slot_probability}")
         slot_probabilities.append(slot_probability)
+        
+    total_price = sum(item["price"] for item in items)
 
     results = {}
     for combination in itertools.product(*[list(slot.keys()) for slot in slot_probabilities]):
@@ -45,6 +48,8 @@ def calculate_slot_probabilities(items, top_n=10):
     top_results = sorted(combined_results.items(), key=lambda x: x[1], reverse=True)[:top_n]
     for result, probability in top_results:
         print(f"{result}: {probability/total_probability:.2%}")
+    
+    print(f"Total price: {total_price}")
 
 def calculate_item_stats(rarity):
     efficiency, luck, comfort, resilience = 0.0, 0.0, 0.0, 0.0
@@ -69,11 +74,11 @@ def calculate_item_stats(rarity):
 
 # Example usage:
 items = [
-    {"slot1": "R", "slot2": "L", "slot3": "E", "slot4": "L"},
-    {"slot1": "R", "slot2": "L", "slot3": "L", "slot4": "L"},
-    {"slot1": "R", "slot2": "L", "slot3": "C", "slot4": "L"},
-    {"slot1": "R", "slot2": "R", "slot3": "C", "slot4": "C"},
-    {"slot1": "E", "slot2": "L", "slot3": "C", "slot4": "C"}
+    {"slot1": "C", "slot2": "C", "slot3": "C", "slot4": "C", "price": 5800},
+    {"slot1": "L", "slot2": "C", "slot3": "L", "slot4": "L", "price": 3600},
+    {"slot1": "L", "slot2": "C", "slot3": "C", "slot4": "L", "price": 4525},
+    {"slot1": "C", "slot2": "C", "slot3": "C", "slot4": "L", "price": 5555},
+    {"slot1": "C", "slot2": "C", "slot3": "C", "slot4": "C", "price": 6999}
 ]
 calculate_slot_probabilities(items, top_n=15)
 calculate_item_stats(Rarity.EPIC)
